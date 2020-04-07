@@ -10,7 +10,7 @@ import Foundation
 
 class NetworkManager: ObservableObject{
     
-    @Published var currencyValue = [Value]()
+    @Published var conversionRate : Double?
     
     let baseurl = "http://apilayer.net/api/live?access_key=5c4f2e3cdf2f54e0c88801273ffd5204&currencies="
     
@@ -20,27 +20,29 @@ class NetworkManager: ObservableObject{
     }
     
     func performRequest(passUrl: String){
-        if let finalUrl = URL(string: passUrl){
+
+        if let finalUrl = URL(string: passUrl)
+        {
             let session = URLSession(configuration: .default)
+
             let task = session.dataTask(with: finalUrl) { (data, response, error) in
-                if error == nil{
+                if error == nil && data != nil
+                {
                     let decoder = JSONDecoder()
-                    if let safeData = data{
-                        do {
-                            let decodedData = try decoder.decode(CurrencyData.self, from: safeData)
-                            print(decodedData)
-                            DispatchQueue.main.async {
-                                self.currencyValue = [decodedData.quotes]
-                                print(self.currencyValue[0].USDINR)
-                            }
-                        } catch {
-                            print(error)
+                    do {
+
+                        let responseData = try decoder.decode(CurrencyConversionResponse.self, from: data!)
+
+                        DispatchQueue.main.async {
+                            self.conversionRate = responseData.quotes?.conversionRate
                         }
+
+                    } catch {
+                        debugPrint(error)
                     }
                 }
             }
             task.resume()
         }
     }
-    
 }
