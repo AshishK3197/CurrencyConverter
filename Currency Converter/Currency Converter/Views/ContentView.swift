@@ -65,13 +65,13 @@ struct ContentView: View {
                         print(roundedValue)
                     }) {
                         Text("Convert")
-                        .font(.system(size: 25))
-                        .fontWeight(.heavy)
-                        .foregroundColor(.blue)
-                        .padding(.horizontal)
+                            .font(.system(size: 25))
+                            .fontWeight(.heavy)
+                            .foregroundColor(.blue)
+                            .padding(.horizontal)
                     }
                     .alert(isPresented: $alertIsVisible) { () -> Alert in
-                        return Alert(title: Text("Result"), message: Text("The converted value is \(self.networkManager.currencyValue[0].USDINR)"), dismissButton: .default(Text("Okay")))
+                        return Alert(title: Text("Result"), message: Text("The converted value is \(String(describing: self.networkManager.conversionRate))"), dismissButton: .default(Text("Okay")))
                     }
                 }
             }.navigationBarTitle("Currency Converter")

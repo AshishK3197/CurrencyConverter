@@ -8,12 +8,21 @@
 
 import Foundation
 
-struct CurrencyData : Decodable{
-    let quotes : Value
+struct CurrencyConversionResponse: Decodable {
+    
+    var success: Bool?
+    var terms, privacy: String?
+    var timestamp: Int?
+    var source: String?
+    var quotes: Quotes?
 }
 
-struct Value : Decodable, Identifiable{
-    var id: String?
-    let USDINR : Double
-}
+struct Quotes: Decodable {
 
+    var conversionRate: Double?
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        self.conversionRate = try! container.decode([String:Double].self).first?.value
+    }
+}
